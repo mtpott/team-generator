@@ -19,7 +19,8 @@
 const fs = require('fs');
 const inquirer = require('inquirer');
 const { managerQuestions } = require('./lib/Manager');
-
+const { engineerQuestions } = require('./lib/Engineer');
+const { internQuestions } = require('./lib/Intern');
 
 const employeeInfo = [
     {
@@ -31,6 +32,19 @@ const employeeInfo = [
                 return true;
             } else {
                 console.log('you must enter your name to continue.');
+                return false;
+            }
+        }
+    },
+    {
+        type: 'number',
+        name: 'id',
+        message: 'please enter your employee ID',
+        validate: employeeId => {
+            if (employeeId) {
+                return true;
+            } else {
+                console.log('you must enter your employee ID to continue');
                 return false;
             }
         }
@@ -50,13 +64,50 @@ const employeeInfo = [
     },
     {
         type: 'list',
-        name: 'type',
+        name: 'role',
         message: 'please choose your position from the list below:',
         choices: ['manager', 'engineer', 'intern'],
     }
 ]
 
 inquirer.prompt(employeeInfo)
-    .then((response) => {
-        return managerQuestions(response);
+    .then(({ role }) => {
+        if (role === 'manager') {
+            return managerQuestions();
+        } else if (role === 'engineer') {
+            return engineerQuestions();
+        } else {
+            return internQuestions();
+        }
     });
+
+function writeFile(response) {
+    return new Promise((resolve, reject) => {
+        fs.writeFile('./dist/index.html', response, err => {
+            if(err) {
+                reject(err);
+                return;
+            }
+            resolve({
+                ok: true,
+                message: 'file created.'
+            });
+        });
+    }
+)};
+
+function copyFile() {
+    return new Promise((resolve, reject) => {
+        fs.copyFile('./src/style.css', './dist/style.css', err => {
+            if (err) {
+                reject(err);
+            }
+            resolve({
+                ok: true,
+                message: 'style sheet created.'
+            });
+        });
+    }
+)};
+
+module.exports = { writeFile, copyFile };
