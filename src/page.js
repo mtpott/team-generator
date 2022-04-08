@@ -14,34 +14,28 @@ const headHtml = () => {
 }
 
 const createManager = response => {
+
     return `
     <section class="my-3" id="manager">
-      <h1 class="text-dark bg-primary p-2 display-inline-block">${name}</h1>
-      <h3 class="
+      <h1 class="text-dark bg-primary p-2 display-inline-block">name: ${response.name}</h1>
+        <h3 class="text-dark bg-primary p-2 display-inline-block">employee id: ${response.id}</h3>
+        <h3 class="text-dark bg-primary p-2 display-inline-block">
+          <a href="mailto:${email}">${email}</a></h3>
+        <h3 class="text-dark bg-primary p-2 display-inline-block">office: ${response.office}</h3>
     </section>
     `
 }
 
 
 const employeeSection = employeeInfo => {
+  const { name, id, email, office, github, school } = employeeInfo;
     return `<body>
         <header>
           <div class="container flex-flow justify-space-between align-center py-3">
             <h1 class="page-title text-secondary bg-dark py-2 px-3">employee generator</h1>
-            <h2 class='page-title text-secondary">use the cli to generate a full list of your employees.</h2>
+            <h2 class="page-title text-secondary">use the cli to generate a full list of your employees.</h2>
           </div>
         </header>
         
-        <main class="container">
-        ${employeeInfo
-            .filter(({ type }) => type)
-            .map(({name, id, email}) => {
-                return `
-                <div class="col-12 mb-2 bg-dark text-light p-3 flex-column">
-                <h3 class="employee-name text-light">${name}</h3>
-                <h4 class="employee-title"> ${type}</h4>
-                <h5>${id}</h5>
-                <a href="mailto:${email}">${email}</a>
-                </div>`;
-            })}      
+        <main class="container">${createManager}</main>      
 `}

@@ -16,11 +16,20 @@
 // WHEN I decide to finish building my team
 // THEN I exit the application, and the HTML is generated
 
+
+//required consts so that everything works
 const fs = require('fs');
 const inquirer = require('inquirer');
-const { managerQuestions } = require('./lib/Manager');
+const { writeFile, copyFile } = require('./utils/generate-page');
 const { engineerQuestions } = require('./lib/Engineer');
 const { internQuestions } = require('./lib/Intern');
+const page = require('./src/page.js');
+
+
+//empty team array--this will be used to push new members to, in order to populate the html
+var team = [];
+
+const teamObj = {...team};
 
 const employeeInfo = [
     {
@@ -70,44 +79,42 @@ const employeeInfo = [
     }
 ]
 
+
+function managerQuestions(team) {
+    inquirer.prompt(
+    {
+        type: 'number',
+        name: 'office',
+        message: 'please enter your office number.'
+    }
+)
+    .then(({ office }) => {
+        team.push(office);
+        const manager = {...team};
+        console.log(manager);
+    })
+    .then(teamObj => {
+        return writeFile(teamObj);
+    })
+    // .then(manager => {
+    //     return copyFile(teamObj);
+    // })
+}
+
+
+
+
 inquirer.prompt(employeeInfo)
-    .then(({ role }) => {
+    .then(({ name, id, email, role }) => {
         if (role === 'manager') {
-            return managerQuestions();
+            team.push(name, id, email, role);
+            console.log(team);
+            return managerQuestions(team);
         } else if (role === 'engineer') {
+            team.push(name, id, email, role);
             return engineerQuestions();
         } else {
+            team.push(name, id, email, role);
             return internQuestions();
         }
     });
-
-function writeFile(response) {
-    return new Promise((resolve, reject) => {
-        fs.writeFile('./dist/index.html', response, err => {
-            if(err) {
-                reject(err);
-                return;
-            }
-            resolve({
-                ok: true,
-                message: 'file created.'
-            });
-        });
-    }
-)};
-
-function copyFile() {
-    return new Promise((resolve, reject) => {
-        fs.copyFile('./src/style.css', './dist/style.css', err => {
-            if (err) {
-                reject(err);
-            }
-            resolve({
-                ok: true,
-                message: 'style sheet created.'
-            });
-        });
-    }
-)};
-
-module.exports = { writeFile, copyFile };
