@@ -14,13 +14,13 @@ const headHtml = () => {
 }
 
 const createManager = response => {
-
+  const { }
     return `
     <section class="my-3" id="manager">
       <h1 class="text-dark bg-primary p-2 display-inline-block">name: ${response.name}</h1>
         <h3 class="text-dark bg-primary p-2 display-inline-block">employee id: ${response.id}</h3>
         <h3 class="text-dark bg-primary p-2 display-inline-block">
-          <a href="mailto:${email}">${email}</a></h3>
+          <a href="mailto:${response.email}">${response.email}</a></h3>
         <h3 class="text-dark bg-primary p-2 display-inline-block">office: ${response.office}</h3>
     </section>
     `
@@ -37,5 +37,5 @@ const employeeSection = employeeInfo => {
           </div>
         </header>
         
-        <main class="container">${createManager}</main>      
+        <main class="container">${createManager(response)}</main>      
 `}

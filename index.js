@@ -21,14 +21,15 @@
 const fs = require('fs');
 const inquirer = require('inquirer');
 const { writeFile, copyFile } = require('./utils/generate-page');
-const { engineerQuestions } = require('./lib/Engineer');
-const page = require('./src/page.js');
+//const page = require('./src/page.js');
 
 
 //empty team array--this will be used to push new members to, in order to populate the html
-var team = [];
+var manager = [];
+var engineer = [];
+var intern = [];
 
-const teamObj = {...team};
+//const teamObj = {...team};
 
 const employeeInfo = [
     {
@@ -79,7 +80,7 @@ const employeeInfo = [
 ]
 
 
-function managerQuestions(team) {
+function managerQuestions(manager) {
     inquirer.prompt(
     {
         type: 'number',
@@ -88,34 +89,60 @@ function managerQuestions(team) {
     }
 )
     .then(({ office }) => {
-        team.push(office);
-        const manager = {...team};
-        console.log(manager);
+        manager.push(office);
+        const managerObj = {...manager};
+        console.log(managerObj);
     })
-    .then(teamObj => {
-        return writeFile(teamObj);
-    })
+    .then(manager => {
+        inquirer.prompt({
+                type: 'confirm',
+                name: 'continue',
+                mesaage: 'do you wish to add another employee?',
+                validate: employeeConfirm => {
+                    if (!employeeConfirm) {
+                        return employeePrompt();
+                    } else {
+                        return employeeList();
+                    }
+                }  
+            }
+        )
+    });
+    // })
     // .then(manager => {
     //     return copyFile(teamObj);
     // })
 }
 
-function internQuestions(team) {
+function internQuestions(intern) {
     inquirer.prompt(
         {
         type: 'input',
         name: 'school',
         message: 'please enter the school that you attend.'
-    })
+        })
     .then(({ school }) => {
-        team.push(school);
-        const teamObj = {...team};
-        console.log(teamObj);
+        intern.push(school);
+        const internObj = {...intern};
+        console.log(internObj);
     })
-}
+    .then(intern => {
+        inquirer.prompt({
+                type: 'confirm',
+                name: 'continue',
+                mesaage: 'do you wish to add another employee?',
+                validate: employeeConfirm => {
+                    if (!employeeConfirm) {
+                        return employeePrompt();
+                    } else {
+                        return employeeList();
+                    }
+                }  
+            })
+        })
+    }
 
-
-function engineerQuestions(response) {
+function engineerQuestions(engineer) {
     inquirer.prompt(
         {
             type: 'input',
@@ -123,23 +150,31 @@ function engineerQuestions(response) {
             message: 'please enter your github username.'
         }
     )
-    .then(response => {
-        console.log(response);
+    .then(({ github }) => {
+       engineer.push(github);
+       const engineerObj = {...engineer};
+       console.log(engineerObj);
     })
 }
 
-
-inquirer.prompt(employeeInfo)
-    .then(({ name, id, email, role }) => {
-        if (role === 'manager') {
-            team.push(name, id, email, role);
-            console.log(team);
-            return managerQuestions(team);
-        } else if (role === 'engineer') {
-            team.push(name, id, email, role);
-            return engineerQuestions();
-        } else {
-            team.push(name, id, email, role);
-            return internQuestions();
+function employeePrompt() {
+    inquirer.prompt(employeeInfo)
+        .then(({ name, id, email, role }) => {
+            if (role === 'manager') {
+                manager.push(name, id, email, role);
+                console.log(manager);
+                return managerQuestions(manager);
+            } else if (role === 'engineer') {
+                engineer.push(name, id, email, role);
+                return engineerQuestions(engineer);
+            } else {
+                intern.push(name, id, email, role);
+                return internQuestions(intern);
+            }
         }
-    });
+    )}
+// employeeList () {
+// if
+// }
+
+employeePrompt();
