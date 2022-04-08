@@ -10,7 +10,7 @@ test('creates an employee object', () => {
 });
 
 test('returns role', () => {
-    const employee = new Employee('John', '1', 'john@john.com');
+    const employee = new Employee('John', '1', 'john@john.com', 'Employee');
 
-    expect(employee.getRole()).toHaveProperty('Employee');
+    expect(employee.getRole()).toBe('Employee');
 })

@@ -22,7 +22,6 @@ const fs = require('fs');
 const inquirer = require('inquirer');
 const { writeFile, copyFile } = require('./utils/generate-page');
 const { engineerQuestions } = require('./lib/Engineer');
-const { internQuestions } = require('./lib/Intern');
 const page = require('./src/page.js');
 
 
@@ -101,7 +100,33 @@ function managerQuestions(team) {
     // })
 }
 
+function internQuestions(team) {
+    inquirer.prompt(
+        {
+        type: 'input',
+        name: 'school',
+        message: 'please enter the school that you attend.'
+    })
+    .then(({ school }) => {
+        team.push(school);
+        const teamObj = {...team};
+        console.log(teamObj);
+    })
+}
 
+
+function engineerQuestions(response) {
+    inquirer.prompt(
+        {
+            type: 'input',
+            name: 'github',
+            message: 'please enter your github username.'
+        }
+    )
+    .then(response => {
+        console.log(response);
+    })
+}
 
 
 inquirer.prompt(employeeInfo)
