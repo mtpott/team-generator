@@ -20,16 +20,12 @@
 //required consts so that everything works
 const fs = require('fs');
 const inquirer = require('inquirer');
-const { writeFile, copyFile } = require('./utils/generate-page');
+//const { writeFile, copyFile } = require('./utils/generate-page');
 //const page = require('./src/page.js');
+const writeFile = require('./src/page');
 
-
-//empty team array--this will be used to push new members to, in order to populate the html
-var manager = [];
-var engineer = [];
-var intern = [];
-
-//const teamObj = {...team};
+//empty team array--each employee object is pushed into this array, which is then passed into the writeFile/copyFile functions
+const team = [];
 
 const employeeInfo = [
     {
@@ -79,8 +75,7 @@ const employeeInfo = [
     }
 ]
 
-
-function managerQuestions(manager) {
+function managerQuestions(arrObj) {
     inquirer.prompt(
     {
         type: 'number',
@@ -89,60 +84,28 @@ function managerQuestions(manager) {
     }
 )
     .then(({ office }) => {
-        manager.push(office);
-        const managerObj = {...manager};
-        console.log(managerObj);
+        arrObj.office = office;
+        })
+    .then((response) => {
+        inquirer.prompt( {
+            type: 'list',
+            name: 'continue',
+            message: 'do you wish to add another employee?',
+            choices: ['yes', 'no']
+        })
+        if (response === 'yes' ) {
+            console.log('yes was selected.')
+            return employeePrompt();
+        } else if (response === 'no') {
+            console.log('no was selected.')
+            //return employeeList(arrObj);
+        } else {
+            console.log('choose yes or no')
+        }
     })
-    .then(manager => {
-        inquirer.prompt({
-                type: 'confirm',
-                name: 'continue',
-                mesaage: 'do you wish to add another employee?',
-                validate: employeeConfirm => {
-                    if (!employeeConfirm) {
-                        return employeePrompt();
-                    } else {
-                        return employeeList();
-                    }
-                }  
-            }
-        )
-    });
-    // })
-    // .then(manager => {
-    //     return copyFile(teamObj);
-    // })
 }
 
-function internQuestions(intern) {
-    inquirer.prompt(
-        {
-        type: 'input',
-        name: 'school',
-        message: 'please enter the school that you attend.'
-        })
-    .then(({ school }) => {
-        intern.push(school);
-        const internObj = {...intern};
-        console.log(internObj);
-    })
-    .then(intern => {
-        inquirer.prompt({
-                type: 'confirm',
-                name: 'continue',
-                mesaage: 'do you wish to add another employee?',
-                validate: employeeConfirm => {
-                    if (!employeeConfirm) {
-                        return employeePrompt();
-                    } else {
-                        return employeeList();
-                    }
-                }  
-            })
-        })
-    }
-
-function engineerQuestions(engineer) {
+function engineerQuestions(arrObj) {
     inquirer.prompt(
         {
             type: 'input',
@@ -151,30 +114,91 @@ function engineerQuestions(engineer) {
         }
     )
     .then(({ github }) => {
-       engineer.push(github);
-       const engineerObj = {...engineer};
-       console.log(engineerObj);
+        arrObj.github = github;
     })
+    .then(() => {
+        inquirer.prompt({
+                type: 'confirm',
+                name: 'continue',
+                message: 'do you wish to add another employee?'
+            })
+            let confirm;
+            if (confirm) {
+                return employeePrompt();
+            } else {
+                return employeeList();
+            }
+        })
 }
 
+function internQuestions(arrObj) {
+    inquirer.prompt(
+        {
+        type: 'input',
+        name: 'school',
+        message: 'please enter the school that you attend.'
+        })
+    .then(({ school }) => {
+        arrObj.school = school;
+    })
+    .then(() => {
+        inquirer.prompt({
+                type: 'confirm',
+                name: 'continue',
+                message: 'do you wish to add another employee?' 
+            })
+            let confirm;
+            if (confirm) {
+                return employeePrompt();
+            } else {
+                employeeList(arrObj);
+            }
+        })
+    }
+// here we are asking the user to enter genereal info. then, role=value should be checked for === manager, intern, engineer. if there is a match, then call the appropriate functions. 
+
+//function that asks the initial questions for each employee. 
 function employeePrompt() {
     inquirer.prompt(employeeInfo)
         .then(({ name, id, email, role }) => {
+            //this object takes the user input from the employeeInfo array and pushes it into the respective functions
+            const arrObj = new Object();
+                arrObj.name = name;
+                arrObj.id = id;
+                arrObj.email = email;
+                arrObj.role = role;
+            console.log(arrObj);
             if (role === 'manager') {
-                manager.push(name, id, email, role);
-                console.log(manager);
-                return managerQuestions(manager);
+                return managerQuestions(arrObj);
             } else if (role === 'engineer') {
-                engineer.push(name, id, email, role);
-                return engineerQuestions(engineer);
+                return engineerQuestions(arrObj);
+            } else if ( role === 'intern') {
+                return internQuestions(arrObj);
             } else {
-                intern.push(name, id, email, role);
-                return internQuestions(intern);
+                console.log("Role not identified. Please try again.");
             }
         }
     )}
-// employeeList () {
-// if
-// }
+
+function readFile(arrObj) {
+    return new Promise((resolve, reject) => {
+        fs.readFile('./dist/index.html', (err, data) => {
+            if (err) { 
+                reject(err);
+                return;
+            }
+            resolve({ 
+                ok: 'true',
+                message: 'file read.'
+            })
+        })
+    })
+}
+
+function employeeList(arrObj) {
+    team.push(arrObj);
+    console.log(team);
+    return writeFile(team);
+}
 
 employeePrompt();
