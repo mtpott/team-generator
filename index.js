@@ -1,18 +1,8 @@
-// GIVEN a command-line application that accepts user input
-// WHEN I am prompted for my team members and their information
 // THEN an HTML file is generated that displays a nicely formatted team roster based on user input
 // WHEN I click on an email address in the HTML
 // THEN my default email program opens and populates the TO field of the email with the address
 // WHEN I click on the GitHub username
 // THEN that GitHub profile opens in a new tab
-// WHEN I start the application
-// THEN I am prompted to enter the team manager’s name, employee ID, email address, and office number
-// WHEN I enter the team manager’s name, employee ID, email address, and office number
-// THEN I am presented with a menu with the option to add an engineer or an intern or to finish building my team
-// WHEN I select the engineer option
-// THEN I am prompted to enter the engineer’s name, ID, email, and GitHub username, and I am taken back to the menu
-// WHEN I select the intern option
-// THEN I am prompted to enter the intern’s name, ID, email, and school, and I am taken back to the menu
 // WHEN I decide to finish building my team
 // THEN I exit the application, and the HTML is generated
 
@@ -22,7 +12,8 @@ const fs = require('fs');
 const inquirer = require('inquirer');
 //const { writeFile, copyFile } = require('./utils/generate-page');
 //const page = require('./src/page.js');
-const writeFile = require('./src/page');
+//const { writeFile } = require('./src/page');
+const employeeData = require('./utils/generate-page');
 
 //empty team array--each employee object is pushed into this array, which is then passed into the writeFile/copyFile functions
 const team = [];
@@ -123,22 +114,21 @@ function employeePrompt() {
         .then(({ name, id, email, role }) => {
             //this object takes the user input from the employeeInfo array and pushes it into the respective functions
             const arrObj = new Object();
-                arrObj.name = name;
-                arrObj.id = id;
-                arrObj.email = email;
-                arrObj.role = role;
+                    arrObj.name = name;
+                    arrObj.id = id;
+                    arrObj.email = email;
+                    arrObj.role = role;
             if (role === 'manager') {
-                //return managerQuestions(arrObj);
                 inquirer.prompt(managerQuestions)
                 .then(({ office, continueConfirm }) => {
                     arrObj.office = office;
                     arrObj.continueConfirm = continueConfirm;
-                    console.log(arrObj);
                     if (continueConfirm === 'yes') {
+                        team.push(arrObj);
                         return employeePrompt();
                     } else if (continueConfirm === 'no') {
-                        console.log('selected no');
-                        //return employeeList();
+                        team.push(arrObj);
+                        return employeeList();
                     }
                 })
             } else if (role === 'engineer') {
@@ -146,12 +136,12 @@ function employeePrompt() {
                 .then(({ github, continueConfirm }) => {
                     arrObj.github = github;
                     arrObj.continueConfirm = continueConfirm;
-                    console.log(arrObj);
                     if (continueConfirm === 'yes') {
+                        team.push(arrObj);
                         return employeePrompt();
                     } else if (continueConfirm === 'no') {
-                        console.log('selected no');
-                        //return employeeList();
+                        team.push(arrObj);
+                        return employeeList();
                     }
                 })
             } else if ( role === 'intern') {
@@ -159,37 +149,54 @@ function employeePrompt() {
                 .then(({ school, continueConfirm }) => {
                     arrObj.school = school;
                     arrObj.continueConfirm = continueConfirm;
-                    console.log(arrObj);
                     if (continueConfirm === 'yes') {
+                        team.push(arrObj);
                         return employeePrompt();
                     } else if (continueConfirm === 'no') {
-                        console.log('selected no');
-                        //return employeeList();
+                        team.push(arrObj);
+                        return employeeList();
                     }
                 })
             } else {
                 console.log("select your role.");
             }
         }
-    )}
+)}
 
-function readFile(arrObj) {
+function copyFile() {
     return new Promise((resolve, reject) => {
-        fs.readFile('./dist/index.html', (err, data) => {
-            if (err) { 
+        fs.copyFile('./src/style.css', './dist/style.css', err => {
+            if (err) {
+                reject(err);
+            }
+            resolve({
+                ok: true,
+                message: 'style sheet created.'
+            });
+        });
+    }
+  )};
+  
+
+function writeFile() {
+    return new Promise((resolve, reject) => {
+        fs.writeFile('./dist/index.html', JSON.stringify(team), err => {
+            if(err) {
                 reject(err);
                 return;
             }
-            resolve({ 
-                ok: 'true',
-                message: 'file read.'
-            })
-        })
-    })
-}
+            resolve({
+                ok: true,
+                message: 'file created.'
+            });
+        });
+    }
+  ).then(() => {
+      return copyFile();
+  })
+};
 
-function employeeList(arrObj) {
-    team.push(arrObj);
+function employeeList() {
     console.log(team);
     return writeFile(team);
 }
