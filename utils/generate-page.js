@@ -2,5 +2,5 @@ const fs = require('fs');
 
 
 
-module.exports = { writeFile, copyFile };
+//module.exports = { writeFile, copyFile };
 

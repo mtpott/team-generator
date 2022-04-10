@@ -42,7 +42,7 @@ const employeeInfo = [
         }
     },
     {
-        type: 'number',
+        type: 'input',
         name: 'id',
         message: 'please enter your employee ID',
         validate: employeeId => {
@@ -75,87 +75,47 @@ const employeeInfo = [
     }
 ]
 
-function managerQuestions(arrObj) {
-    inquirer.prompt(
+const managerQuestions = [
     {
-        type: 'number',
+        type: 'input',
         name: 'office',
         message: 'please enter your office number.'
+    },
+    {
+        type: 'list',
+        name: 'continueConfirm',
+        message: 'do you wish to add another employee?',
+        choices: ['yes', 'no']
     }
-)
-    .then(({ office }) => {
-        arrObj.office = office;
-        })
-    .then((response) => {
-        inquirer.prompt( {
-            type: 'list',
-            name: 'continue',
-            message: 'do you wish to add another employee?',
-            choices: ['yes', 'no']
-        })
-        if (response === 'yes' ) {
-            console.log('yes was selected.')
-            return employeePrompt();
-        } else if (response === 'no') {
-            console.log('no was selected.')
-            //return employeeList(arrObj);
-        } else {
-            console.log('choose yes or no')
-        }
-    })
-}
+]
 
-function engineerQuestions(arrObj) {
-    inquirer.prompt(
-        {
-            type: 'input',
-            name: 'github',
-            message: 'please enter your github username.'
-        }
-    )
-    .then(({ github }) => {
-        arrObj.github = github;
-    })
-    .then(() => {
-        inquirer.prompt({
-                type: 'confirm',
-                name: 'continue',
-                message: 'do you wish to add another employee?'
-            })
-            let confirm;
-            if (confirm) {
-                return employeePrompt();
-            } else {
-                return employeeList();
-            }
-        })
-}
+const engineerQuestions = [
+    {
+        type: 'input',
+        name: 'github',
+        message: 'please enter your github username.'
+    },
+    {
+        type: 'list',
+        name: 'continueConfirm',
+        message: 'do you wish to add another employee?',
+        choices: ['yes', 'no']
+    }
+]
 
-function internQuestions(arrObj) {
-    inquirer.prompt(
-        {
+const internQuestions = [
+    {
         type: 'input',
         name: 'school',
         message: 'please enter the school that you attend.'
-        })
-    .then(({ school }) => {
-        arrObj.school = school;
-    })
-    .then(() => {
-        inquirer.prompt({
-                type: 'confirm',
-                name: 'continue',
-                message: 'do you wish to add another employee?' 
-            })
-            let confirm;
-            if (confirm) {
-                return employeePrompt();
-            } else {
-                employeeList(arrObj);
-            }
-        })
+    },
+    {
+        type: 'list',
+        name: 'continueConfirm',
+        message: 'do you wish to add another employee?',
+        choices: ['yes', 'no']
     }
-// here we are asking the user to enter genereal info. then, role=value should be checked for === manager, intern, engineer. if there is a match, then call the appropriate functions. 
+]
 
 //function that asks the initial questions for each employee. 
 function employeePrompt() {
@@ -167,15 +127,48 @@ function employeePrompt() {
                 arrObj.id = id;
                 arrObj.email = email;
                 arrObj.role = role;
-            console.log(arrObj);
             if (role === 'manager') {
-                return managerQuestions(arrObj);
+                //return managerQuestions(arrObj);
+                inquirer.prompt(managerQuestions)
+                .then(({ office, continueConfirm }) => {
+                    arrObj.office = office;
+                    arrObj.continueConfirm = continueConfirm;
+                    console.log(arrObj);
+                    if (continueConfirm === 'yes') {
+                        return employeePrompt();
+                    } else if (continueConfirm === 'no') {
+                        console.log('selected no');
+                        //return employeeList();
+                    }
+                })
             } else if (role === 'engineer') {
-                return engineerQuestions(arrObj);
+                inquirer.prompt(engineerQuestions)
+                .then(({ github, continueConfirm }) => {
+                    arrObj.github = github;
+                    arrObj.continueConfirm = continueConfirm;
+                    console.log(arrObj);
+                    if (continueConfirm === 'yes') {
+                        return employeePrompt();
+                    } else if (continueConfirm === 'no') {
+                        console.log('selected no');
+                        //return employeeList();
+                    }
+                })
             } else if ( role === 'intern') {
-                return internQuestions(arrObj);
+                inquirer.prompt(internQuestions)
+                .then(({ school, continueConfirm }) => {
+                    arrObj.school = school;
+                    arrObj.continueConfirm = continueConfirm;
+                    console.log(arrObj);
+                    if (continueConfirm === 'yes') {
+                        return employeePrompt();
+                    } else if (continueConfirm === 'no') {
+                        console.log('selected no');
+                        //return employeeList();
+                    }
+                })
             } else {
-                console.log("Role not identified. Please try again.");
+                console.log("select your role.");
             }
         }
     )}
