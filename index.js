@@ -113,47 +113,57 @@ function employeePrompt() {
     inquirer.prompt(employeeInfo)
         .then(({ name, id, email, role }) => {
             //this object takes the user input from the employeeInfo array and pushes it into the respective functions
-            const arrObj = new Object();
-                    arrObj.name = name;
-                    arrObj.id = id;
-                    arrObj.email = email;
-                    arrObj.role = role;
             if (role === 'manager') {
+                const managerObj = new Object();
+                    managerObj.managerName = name;
+                    managerObj.managerId = id;
+                    managerObj.managerEmail = email;
+                    managerObj.managerRole = role;
                 inquirer.prompt(managerQuestions)
                 .then(({ office, continueConfirm }) => {
-                    arrObj.office = office;
-                    arrObj.continueConfirm = continueConfirm;
+                    managerObj.managerOffice = office;
+                    managerObj.continueConfirm = continueConfirm;
                     if (continueConfirm === 'yes') {
-                        team.push(arrObj);
+                        team.push(managerObj);
                         return employeePrompt();
                     } else if (continueConfirm === 'no') {
-                        team.push(arrObj);
+                        team.push(managerObj);
                         return employeeList();
                     }
                 })
             } else if (role === 'engineer') {
+                const engineerObj = new Object();
+                    engineerObj.engineerName = name;
+                    engineerObj.engineerId = id;
+                    engineerObj.engineerEmail = email;
+                    engineerObj.engineerRole = role;
                 inquirer.prompt(engineerQuestions)
                 .then(({ github, continueConfirm }) => {
-                    arrObj.github = github;
-                    arrObj.continueConfirm = continueConfirm;
+                    engineerObj.engineerGithub = github;
+                    engineerObj.continueConfirm = continueConfirm;
                     if (continueConfirm === 'yes') {
-                        team.push(arrObj);
+                        team.push(engineerObj);
                         return employeePrompt();
                     } else if (continueConfirm === 'no') {
-                        team.push(arrObj);
+                        team.push(engineerObj);
                         return employeeList();
                     }
                 })
             } else if ( role === 'intern') {
+                const internObj = new Object();
+                    internObj.internName = name;
+                    internObj.internId = id;
+                    internObj.internEmail = email;
+                    internObj.internRole = role;
                 inquirer.prompt(internQuestions)
                 .then(({ school, continueConfirm }) => {
-                    arrObj.school = school;
-                    arrObj.continueConfirm = continueConfirm;
+                    internObj.internSchool = school;
+                    internObj.continueConfirm = continueConfirm;
                     if (continueConfirm === 'yes') {
-                        team.push(arrObj);
+                        team.push(internObj);
                         return employeePrompt();
                     } else if (continueConfirm === 'no') {
-                        team.push(arrObj);
+                        team.push(internObj);
                         return employeeList();
                     }
                 })

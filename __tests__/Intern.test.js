@@ -26,9 +26,15 @@ test('accesses role', () => {
 test('gets intern info as an object', () => {
     const intern = new Intern('Tom', '3', 'tom@tom.com', 'UNCC', 'Intern');
 
-    expect(intern.getInfo()).toHaveProperty('name');
-    expect(intern.getInfo()).toHaveProperty('id');
-    expect(intern.getInfo()).toHaveProperty('email');
-    expect(intern.getInfo()).toHaveProperty('school');
-    expect(intern.getInfo()).toHaveProperty('role');
+    expect(intern.getInfo()).toHaveProperty('internName');
+    expect(intern.getInfo()).toHaveProperty('internId');
+    expect(intern.getInfo()).toHaveProperty('internEmail');
+    expect(intern.getInfo()).toHaveProperty('internSchool');
+    expect(intern.getInfo()).toHaveProperty('internRole');
 });
+
+test('returns confirm statement', () => {
+    const intern = new Intern('Tom', '3', 'tom@tom.com', 'UNCC', 'Yes', 'Intern');
+
+    expect(intern.getContinue()).toBe('Yes');
+})

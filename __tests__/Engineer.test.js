@@ -24,11 +24,18 @@ test('accesses role', () => {
 });
 
 test('gets engineer info as an object', () => {
-    const engineer = new Engineer('Bob', '2', 'bob@bob.com', 'gitbob', 'Engineer');
+    const engineer = new Engineer('Bob', '2', 'bob@bob.com', 'gitbob', 'Engineer', 'Yes');
 
-    expect(engineer.getInfo()).toHaveProperty('name');
-    expect(engineer.getInfo()).toHaveProperty('id');
-    expect(engineer.getInfo()).toHaveProperty('email');
-    expect(engineer.getInfo()).toHaveProperty('github');
-    expect(engineer.getInfo()).toHaveProperty('role');
+    expect(engineer.getInfo()).toHaveProperty('engineerName');
+    expect(engineer.getInfo()).toHaveProperty('engineerId');
+    expect(engineer.getInfo()).toHaveProperty('engineerEmail');
+    expect(engineer.getInfo()).toHaveProperty('engineerGithub');
+    expect(engineer.getInfo()).toHaveProperty('engineerRole');
+    expect(engineer.getInfo()).toHaveProperty('continueConfirm');
+})
+
+test('returns confirm statement', () => {
+    const engineer = new Engineer('Bob', '2', 'bob@bob.com', 'gitbob','Yes', 'Engineer');
+
+    expect(engineer.getContinue()).toBe('Yes');
 })

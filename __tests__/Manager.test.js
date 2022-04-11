@@ -26,11 +26,11 @@ test('accesses role', () => {
 test('gets manager info as an object', () => {
     const manager = new Manager('Jane', '1', 'jane@jane.com', '10', 'Yes', 'Manager');
 
-    expect(manager.getInfo()).toHaveProperty('name');
-    expect(manager.getInfo()).toHaveProperty('id');
-    expect(manager.getInfo()).toHaveProperty('email');
-    expect(manager.getInfo()).toHaveProperty('office');
-    expect(manager.getInfo()).toHaveProperty('role');
+    expect(manager.getInfo()).toHaveProperty('managerName');
+    expect(manager.getInfo()).toHaveProperty('managerId');
+    expect(manager.getInfo()).toHaveProperty('managerEmail');
+    expect(manager.getInfo()).toHaveProperty('managerOffice');
+    expect(manager.getInfo()).toHaveProperty('managerRole');
     expect(manager.getInfo()).toHaveProperty('continueConfirm');
 })
 

@@ -14,9 +14,3 @@ test('returns role', () => {
 
     expect(employee.getRole()).toBe('Employee');
 });
-
-test('returns continueConfirm', () => {
-    const employee = new Employee('John', '1', 'john@john.com', 'Employee', 'Yes');
-
-    expect(employee.getContinue()).toBe('Yes');
-})

@@ -1,0 +1,27 @@
+h1,
+h2,
+h3 {
+  /* margin: 5px 0; */
+  color: #5d665f;
+  line-height: 1.25;
+  font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+h1 {
+    font-size: 18px;
+    font-style: bold italic;
+}
+
+h2 {
+    font-size: 15px;
+    font-style: italic;
+}
+
+h3 {
+    font-size: 14px;
+}
+
+footer {
+    font-size: 10px;
+    font-style: bold;
+}
