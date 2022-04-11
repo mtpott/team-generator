@@ -13,7 +13,7 @@ const inquirer = require('inquirer');
 //const { writeFile, copyFile } = require('./utils/generate-page');
 //const page = require('./src/page.js');
 //const { writeFile } = require('./src/page');
-const employeeData = require('./utils/generate-page');
+const { renderHTML } = require('./utils/generate-page');
 
 //empty team array--each employee object is pushed into this array, which is then passed into the writeFile/copyFile functions
 const team = [];
@@ -180,7 +180,7 @@ function copyFile() {
 
 function writeFile() {
     return new Promise((resolve, reject) => {
-        fs.writeFile('./dist/index.html', JSON.stringify(team), err => {
+        fs.writeFile('./dist/index.html', renderHTML(team), err => {
             if(err) {
                 reject(err);
                 return;
