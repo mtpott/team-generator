@@ -9,6 +9,7 @@ const Intern = require('./lib/Intern');
 //empty team array--each employee object is pushed into this array, which is then passed into the writeFile/copyFile functions
 const team = [];
 
+//initial employee array. called first, in order to have the subsequent role objects inherit these responses.
 const employeeInfo = [
     {
         type: 'input',
@@ -57,6 +58,7 @@ const employeeInfo = [
     }
 ]
 
+//managerQuestions, engineerQuestions, and InternQuestions are all role-specific arrays that are called inside of the inquirer.prompts in employeePrompt. If the user selects above that their role is 'Manager', they are then asked these questions below, because they are directly related to the manager role. The same functionality applies to both the Engineer and Intern roles.
 const managerQuestions = [
     {
         type: 'input',
@@ -103,7 +105,7 @@ const internQuestions = [
 function employeePrompt() {
     inquirer.prompt(employeeInfo)
         .then(({ name, id, email, role }) => {
-            //this object takes the user input from the employeeInfo array and pushes it into the respective functions
+            //if the user selects that their role is 'Manager', a Manager object is created. This object takes the user input from the employeeInfo array and pushes it into the respective functions. The same functionality applies to the Engineer and Intern responses.
             if (role === 'manager') {
                 const managerObj = new Manager();
                 managerObj.name = name;
@@ -167,6 +169,8 @@ function employeePrompt() {
         }
 )}
 
+
+//writeFile and copyFile are used to render the HTML and subsequent style.css pages to the dist folder. 
 function copyFile() {
     return new Promise((resolve, reject) => {
         fs.copyFile('./src/style.css', './dist/style.css', err => {
@@ -200,8 +204,10 @@ function writeFile() {
   })
 };
 
+//this function is called inside of the employeePrompt function, if the user chooses to not add another employee to the team array. If that happens, this function returns writeFile and passes the team array to the function.
 function employeeList() {
     return writeFile(team);
 }
 
+//initial function called when the user calls 'node index' at the command line. this handles the functionality for the inquirer prompts and object handling.
 employeePrompt();
