@@ -1,19 +1,10 @@
-// THEN an HTML file is generated that displays a nicely formatted team roster based on user input
-// WHEN I click on an email address in the HTML
-// THEN my default email program opens and populates the TO field of the email with the address
-// WHEN I click on the GitHub username
-// THEN that GitHub profile opens in a new tab
-// WHEN I decide to finish building my team
-// THEN I exit the application, and the HTML is generated
-
-
 //required consts so that everything works
 const fs = require('fs');
 const inquirer = require('inquirer');
-//const { writeFile, copyFile } = require('./utils/generate-page');
-//const page = require('./src/page.js');
-//const { writeFile } = require('./src/page');
 const { renderHTML } = require('./utils/generate-page');
+const Manager = require('./lib/Manager');
+const Engineer = require('./lib/Engineer');
+const Intern = require('./lib/Intern');
 
 //empty team array--each employee object is pushed into this array, which is then passed into the writeFile/copyFile functions
 const team = [];
@@ -114,15 +105,16 @@ function employeePrompt() {
         .then(({ name, id, email, role }) => {
             //this object takes the user input from the employeeInfo array and pushes it into the respective functions
             if (role === 'manager') {
-                const managerObj = new Object();
-                    managerObj.managerName = name;
-                    managerObj.managerId = id;
-                    managerObj.managerEmail = email;
-                    managerObj.managerRole = role;
+                const managerObj = new Manager();
+                managerObj.name = name;
+                managerObj.id = id;
+                managerObj.email = email;
+                managerObj.getRole = 'Manager';
                 inquirer.prompt(managerQuestions)
                 .then(({ office, continueConfirm }) => {
-                    managerObj.managerOffice = office;
+                    managerObj.office = office;
                     managerObj.continueConfirm = continueConfirm;
+                    console.log(managerObj.getInfo());
                     if (continueConfirm === 'yes') {
                         team.push(managerObj);
                         return employeePrompt();
@@ -132,15 +124,16 @@ function employeePrompt() {
                     }
                 })
             } else if (role === 'engineer') {
-                const engineerObj = new Object();
-                    engineerObj.engineerName = name;
-                    engineerObj.engineerId = id;
-                    engineerObj.engineerEmail = email;
-                    engineerObj.engineerRole = role;
+                const engineerObj = new Engineer();
+                    engineerObj.name = name;
+                    engineerObj.id = id;
+                    engineerObj.email = email;
+                    engineerObj.getRole = 'Engineer';
                 inquirer.prompt(engineerQuestions)
                 .then(({ github, continueConfirm }) => {
-                    engineerObj.engineerGithub = github;
+                    engineerObj.github = github;
                     engineerObj.continueConfirm = continueConfirm;
+                    console.log(engineerObj.getInfo());
                     if (continueConfirm === 'yes') {
                         team.push(engineerObj);
                         return employeePrompt();
@@ -150,15 +143,16 @@ function employeePrompt() {
                     }
                 })
             } else if ( role === 'intern') {
-                const internObj = new Object();
-                    internObj.internName = name;
-                    internObj.internId = id;
-                    internObj.internEmail = email;
-                    internObj.internRole = role;
+                const internObj = new Intern();
+                    internObj.name = name;
+                    internObj.id = id;
+                    internObj.email = email;
+                    internObj.getRole = 'Intern';
                 inquirer.prompt(internQuestions)
                 .then(({ school, continueConfirm }) => {
-                    internObj.internSchool = school;
+                    internObj.school = school;
                     internObj.continueConfirm = continueConfirm;
+                    console.log(internObj.getInfo());
                     if (continueConfirm === 'yes') {
                         team.push(internObj);
                         return employeePrompt();
@@ -207,7 +201,6 @@ function writeFile() {
 };
 
 function employeeList() {
-    console.log(team);
     return writeFile(team);
 }
 

@@ -3,15 +3,15 @@ const createManager = manager => {
     if (!manager) {
       return '';
     }
-    const { managerName, managerId, managerEmail, managerRole, managerOffice } = {...manager};
+    const { name, id, email, office } = {...manager};
       return `
-        <section class="my-3 d-flex" id="manager">
-            <h1 class="text-dark bg-info display-inline-block">name: ${managerName}</h1>
-            <h2 class="text-dark bg-info display-inline-block">role: ${managerRole}</h2>
-            <h3 class="text-dark bg-info display-inline-block">employee id: ${managerId}</h3>
-            <h3 class="text-dark bg-info display-inline-block">
-                <a href="mailto:${managerEmail}">${managerEmail}</a></h3>
-            <h3 class="text-dark bg-info display-inline-block">office: ${managerOffice}</h3>
+        <section class="container flex-flow justify-space-between align-center py-5 col-xl-3" id="manager">
+            <h1 class="text-dark bg-light">${name}</h1>
+            <h2 class="text-dark">Manager</h2>
+            <h3 class="text-dark">employee id: ${id}</h3>
+            <h3 class="text-dark">office: ${office}</h3>
+            <h3 class="btn btn-info text-dark">
+                <a href="mailto:${email}">${email}</a></h3>
         </section>
        `
 };
@@ -21,16 +21,16 @@ const createEngineer = engineer => {
   if (!engineer) {
     return '';
   }
-    const { engineerName, engineerId, engineerEmail, engineerRole, engineerGithub } = {...engineer};
+    const { name, id, email, github } = {...engineer};
       return `
-        <section class="my-3 d-flex" id="engineer">
-            <h1 class="text-dark bg-info display-inline-block">name: ${engineerName}</h1>
-            <h2 class="text-dark bg-info display-inline-block">role: ${engineerRole}</h2>
-            <h3 class="text-dark bg-info display-inline-block">employee id: ${engineerId}</h3>
-            <h3 class="text-dark bg-info display-inline-block">
-                <a href="mailto:${engineerEmail}">${engineerEmail}</a></h3>
-            <h3 class="text-dark bg-info display-inline-block">office: ${engineerGithub}</h3>
-                <a href="${engineerGithub}">${engineerGithub}</a></h3>
+        <section class="container flex-flow justify-space-between align-center py-5 col-xl-3" id="engineer">
+            <h1 class="text-dark bg-light">name: ${name}</h1>
+            <h2 class="text-dark">Engineer</h2>
+            <h3 class="text-dark">employee id: ${id}</h3>
+            <h3 class="text-dark">github:
+              <a href="https://github.com/${github}">${github}</a></h3>
+            <h3 class="btn btn-info text-dark">
+                <a href="mailto:${email}">${email}</a></h3>
         </section>
       `
   };
@@ -40,15 +40,15 @@ const createIntern = intern => {
     if (!intern) {
       return '';
     }
-    const { internName, internId, internEmail, internRole, internSchool } = {...intern};
+    const { name, id, email, school } = {...intern};
       return `
-        <section class="my-3 d-flex" id="intern">
-            <h1 class="text-dark bg-primary display-inline-block">name: ${internName}</h1>
-            <h2 class="text-dark bg-primary display-inline-block">role: ${internRole}</h2>
-            <h3 class="text-dark bg-primary display-inline-block">employee id: ${internId}</h3>
-            <h3 class="text-dark bg-primary display-inline-block">
-                <a href="mailto:${internEmail}">${internEmail}</a></h3>
-            <h3 class="text-dark bg-primary display-inline-block">college or university: ${internSchool}</h3>
+        <section class="container flex-flow justify-space-between align-center py-5 col-xl-3" id="intern">
+            <h1 class="text-dark bg-light">name: ${name}</h1>
+            <h2 class="text-dark">Intern</h2>
+            <h3 class="text-dark">employee id: ${id}</h3>
+            <h3 class="text-dark">university: ${school}</h3>
+            <h3 class="btn btn-info text-dark">
+                <a href="mailto:${email}">${email}</a></h3>
         </section>
       `
   };
@@ -71,38 +71,33 @@ const createIntern = intern => {
       <body>
         <header>
           <div class="container flex-flow justify-space-between align-center py-3">
-            <h1 class="page-title text-secondary bg-dark py-2 px-3">employee generator</h1>
-            <h2 class="page-title text-secondary">use the cli to generate a full list of your employees.</h2>
+            <h1 class="page-title text-center text-dark bg-info py-2 px-3">employee generator</h1>
+              <h2 class="page-title text-secondary text-center">
+                generate a full list of your employees with the command line interface.
+              </h2>
           </div>
         </header>
-        <main>`;
+        <main class="row justify-space-between ml-2">`;
 
-        for (manager of team) {
-          htmlFile += createManager(manager);
-        }
-        for (engineer of team) {
-          htmlFile += createEngineer(engineer);
+        for (let i = 0; i < team.length; i++) {
+          if(team[i].getRole === 'Manager') {
+            htmlFile += createManager(team[i]);
           }
-        for (intern of team) {
-          htmlFile += createIntern(intern);
+          if(team[i].getRole === 'Engineer') {
+            htmlFile += createEngineer(team[i]);
+          }
+          if(team[i].getRole === 'Intern') {
+            htmlFile += createIntern(team[i]);
+          }
         }
 
-
-        // if (manager) {
-        //   console.log(managerRole);
-        //   //htmlFile += createManager();
-        // }
-        // if (engineerRole) {
-        //   console.log(engineerRole);
-        //   //htmlFile += createEngineer();
-        // }
-        // if (internRole) {
-        //   console.log(internRole);
-        //   //htmlFile += createIntern();
-        // }
-
-      htmlFile += `</main>
-      <footer>generated by node.js</footer>`
+      htmlFile += 
+        `</main>
+          <footer class="footer text-center">
+              generated by node.js
+          </footer>
+        </body>
+    </html>`
       return htmlFile;
     
   }
